@@ -21,22 +21,18 @@ With options:
 java -jar ImageTracer.jar <filename> ltres 1 qtres 1 pathomit 8 numberofcolors 16 mincolorratio 0.02 colorquantcycles 3 scale 1 lcpr 0 qcpr 0
 ```
 
-### Initialization
-Include ImageTracer.java in your project, then create an ImageTracer object:
+### Including in Java projects
+Add ImageTracer.jar to your build path, import, then use the static methods:
 ```
-ImageTracer it = new ImageTracer();
+import jankovicsandras.imagetracer.ImageTracer;
+
+...
+
+ImageTracer.saveString("output.svg",
+				ImageTracer.imageToSVG("input.jpg",null)
+		      );
 ```
 
-### Examples
-#### Example 1
-Basic usage: loading image, tracing, creating SVG string, saving SVG string as a new file
-```
-saveString("output.svg",
-    imageToSVG("input.jpg",null)
-);
-```
-
-#### Example 2
 With options
 ```
 HashMap<String,Float> options = new HashMap<String,Float>();
@@ -56,9 +52,9 @@ options.put("scale",1f);
 options.put("lcpr",0f);
 options.put("qcpr",0f);
 
-saveString("output.svg",
-    imageToSVG("input.jpg",options)
-);
+ImageTracer.saveString("output.svg",
+				ImageTracer.imageToSVG("input.jpg",options)
+		      );
 ```
 
 There are more functions for advanced users, read the source if you are interested. :)
@@ -66,10 +62,10 @@ There are more functions for advanced users, read the source if you are interest
 ### Options
 |Option name|Default value|Meaning|
 |-----------|-------------|-------|
-|ltres|1|Error treshold for straight lines. Use 0.001 instead of 0 if only round splines are required.|
-|qtres|1|Error treshold for quadratic splines. Use 0.001 instead of 0 if only straight lines are required.|
-|pathomit|8|Edge node paths shorter than this will be discarded for noise reduction. Use 1 instead of 0 to get paths around single pixels.|
-|numberofcolors|16|Number of colors to use on palette if pal object is not defined.|
+|ltres|1|Error treshold for straight lines.|
+|qtres|1|Error treshold for quadratic splines.|
+|pathomit|8|Edge node paths shorter than this will be discarded for noise reduction.|
+|numberofcolors|16|Number of colors to use on palette if palette is not defined.|
 |mincolorratio|0.02|Color quantization will randomize a color if fewer pixels than (total pixels*mincolorratio) has it.|
 |colorquantcycles|3|Color quantization will be repeated this many times.|
 |scale|1|Every coordinate will be multiplied with this, to scale the SVG.|
