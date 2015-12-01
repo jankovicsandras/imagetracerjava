@@ -87,7 +87,7 @@ import javax.imageio.ImageIO;
 
 public class ImageTracer{
 
-	public static String versionnumber = "1.0.1";
+	public static String versionnumber = "1.0.2";
 	
 	public ImageTracer(){}
 	
@@ -165,6 +165,9 @@ public class ImageTracer{
 	// Loading a file to ImageData, RGBA byte order
 	public static ImageData loadImageData(String filename) throws Exception {
 		BufferedImage image = ImageIO.read(new File(filename));
+		return loadImageData(image);
+	}
+	public static ImageData loadImageData(BufferedImage image) throws Exception {
 		int width = image.getWidth(); int height = image.getHeight();
 		int[] rawdata = image.getRGB(0, 0, width, height, null, 0, width);
 		byte[] data = new byte[rawdata.length*4];
@@ -191,9 +194,14 @@ public class ImageTracer{
 	////////////////////////////////////////////////////////////
 	
 	// Loading an image from a file, tracing when loaded, then returning the SVG String
-	public static String imageToSVG (String filename, HashMap<String,Float> options) throws Exception{
+	public static String imageToSVG(String filename, HashMap<String,Float> options) throws Exception{
 		options = checkoptions(options);
 		ImageData imgd = loadImageData(filename);
+		return imagedataToSVG(imgd,options);
+	}// End of imageToSVG()
+	public static String imageToSVG(BufferedImage image, HashMap<String,Float> options) throws Exception{
+		options = checkoptions(options);
+		ImageData imgd = loadImageData(image);
 		return imagedataToSVG(imgd,options);
 	}// End of imageToSVG()
 
@@ -213,15 +221,20 @@ public class ImageTracer{
 		ImageData imgd = loadImageData(filename);
 		return imagedataToTracedata(imgd,options);
 	}// End of imageToTracedata()
+	public IndexedImage imageToTracedata(BufferedImage image, HashMap<String,Float> options) throws Exception{
+		options = checkoptions(options);
+		ImageData imgd = loadImageData(image);
+		return imagedataToTracedata(imgd,options);
+	}// End of imageToTracedata()
 	
 	// Tracing ImageData, then returning IndexedImage with tracedata in layers
 	public static IndexedImage imagedataToTracedata (ImageData imgd, HashMap<String,Float> options){
 		// 1. Color quantization
-		IndexedImage ii = colorquantization(imgd, null, (int)(Math.floor(options.get("numberofcolors"))), (int)(Math.floor(options.get("mincolorratio"))), (int)(Math.floor(options.get("colorquantcycles"))));
+		IndexedImage ii = colorquantization(imgd, null, (int)(Math.floor(options.get("numberofcolors"))), options.get("mincolorratio"), (int)(Math.floor(options.get("colorquantcycles"))));
 		// 2. Layer separation and edge detection
 		int[][][] rawlayers = layering(ii);
 		// 3. Batch pathscan
-		ArrayList<ArrayList<ArrayList<Integer[]>>> bps = batchpathscan(rawlayers,options.get("pathomit"));
+		ArrayList<ArrayList<ArrayList<Integer[]>>> bps = batchpathscan(rawlayers, (int)(Math.floor(options.get("pathomit"))));
 		// 4. Batch interpollation
 		ArrayList<ArrayList<ArrayList<Double[]>>> bis = batchinternodes(bps);
 		// 5. Batch tracing
