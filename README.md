@@ -3,7 +3,7 @@ Simple raster image tracer and vectorizer written in Java for desktop. See https
 
 by András Jankovics 2015
 
-This is a port of imagetracer.js , please read that for more details: https://github.com/jankovicsandras/imagetracerjs/blob/master/README.md 
+This is a port of imagetracer.js , please read that for more details: https://github.com/jankovicsandras/imagetracerjs
 
 I will try to update this documentation as soon as I have enough time. :)
 
