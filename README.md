@@ -1,15 +1,15 @@
 # imagetracerjava
-Simple raster image tracer and vectorizer written in Java for desktop.
+Simple raster image tracer and vectorizer written in Java for desktop. See https://github.com/jankovicsandras/imagetracerandroid for the Android version.
 
 by András Jankovics 2015
 
 This is a port of imagetracer.js , please read that for more details: https://github.com/jankovicsandras/imagetracerjs/blob/master/README.md 
 
 I will try to update this documentation as soon as I have enough time. :)
-An Android version is planned also, the only difference will be that Android has no javax.imageio which is used for image loading, so a new loadImageData() function is required.
-
 
 ### Run as a standalone program 
+
+Warning: if the outfilename parameter is not specified, then this will overwrite <filename>.svg .
 
 Basic usage: 
 ```
@@ -18,7 +18,7 @@ java -jar ImageTracer.jar <filename>
 
 With options:
 ```
-java -jar ImageTracer.jar <filename> ltres 1 qtres 1 pathomit 8 numberofcolors 16 mincolorratio 0.02 colorquantcycles 3 scale 1 lcpr 0 qcpr 0
+java -jar ImageTracer.jar <filename> outfilename output.svg ltres 1 qtres 1 pathomit 8 numberofcolors 16 mincolorratio 0.02 colorquantcycles 3 scale 1 lcpr 0 qcpr 0
 ```
 
 ### Including in Java projects
