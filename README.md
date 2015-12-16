@@ -142,13 +142,12 @@ If the **fitseq** function can not fit a straight line or a quadratic spline to 
 The coordinates are rendered to [SVG Paths](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths) in the **getsvgstring** function.
 
 ### Ideas for improvement
-- TODO: Node.js support - Canvas and ImageData is not supported by Node.js by default, but [canvas](https://www.npmjs.com/package/canvas) or other packages might solve this.
 - Error handling: there's very little error handling now, Out of memory can happen easily with big images or many layers.
 - Color quantization: other algorithms?
 - Color quantization: colors with few pixels are randomized, but probably the most distant colors should be found instead.
-- Tracing: finding more suitable sequences.
-- Tracing: 7. Set splitpoint = (fitting point + errorpoint)/2 ; this is just a guess, there might be a better splitpoint.
-- Tracing: 9. If splitpoint-endpoint is a spline, try to add new points from the next sequence; this is not implemented.
+- Tracing: 5.1. finding more suitable sequences.
+- Tracing: 5.5. Set splitpoint = (fitting point + errorpoint)/2 ; this is just a guess, there might be a better splitpoint.
+- Tracing: 5.7. If splitpoint-endpoint is a spline, try to add new points from the next sequence; this is not implemented.
 - Tracing: cubic splines or other curves?
 - Default values: they are chosen because they seemed OK, not based on calculations.
 - Output: [PDF](https://en.wikipedia.org/wiki/Portable_Document_Format), [DXF](https://en.wikipedia.org/wiki/AutoCAD_DXF),   [G-code](https://en.wikipedia.org/wiki/G-code) or other output?
