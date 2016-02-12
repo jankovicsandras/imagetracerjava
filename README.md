@@ -12,18 +12,18 @@ This is a port of imagetracer.js: https://github.com/jankovicsandras/imagetracer
 Warning: if the outfilename parameter is not specified, then this will overwrite <filename>.svg .
 
 Basic usage: 
-```
+```bash
 java -jar ImageTracer.jar <filename>
 ```
 
 With options:
-```
+```bash
 java -jar ImageTracer.jar <filename> outfilename output.svg ltres 1 qtres 1 pathomit 8 numberofcolors 16 mincolorratio 0.02 colorquantcycles 3 scale 1 lcpr 0 qcpr 0
 ```
 
 ### Including in Java projects
 Add ImageTracer.jar to your build path, import, then use the static methods:
-```
+```java
 import jankovicsandras.imagetracer.ImageTracer;
 
 ...
@@ -34,7 +34,7 @@ ImageTracer.saveString("output.svg",
 ```
 
 With options and palette
-```
+```java
 // Options
 HashMap<String,Float> options = new HashMap<String,Float>();
 
