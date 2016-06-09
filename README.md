@@ -1,11 +1,25 @@
 # imagetracerjava
-![alt Bitmap to Svg](s1.png)
+![alt Bitmap to Svg](docimages/s1.png)
 
 Simple raster image tracer and vectorizer written in Java for desktop. See https://github.com/jankovicsandras/imagetracerandroid for the Android version.
 
-by András Jankovics 2015
+by András Jankovics 2015, 2016
 
 This is a port of imagetracer.js: https://github.com/jankovicsandras/imagetracerjs
+
+### 1.1.1
+
+- Bugfix: CSS3 RGBA output in SVG was technically incorrect (however supported by major browsers), so this is changed. [More info](https://stackoverflow.com/questions/6042550/svg-fill-color-transparency-alpha)
+- transparency support: alpha is not discarded now, it is given more weight in color quantization
+- new options.roundcoords : rounding coordinates to a given decimal place. This can reduce SVG length significantly (>20%) with minor loss of precision.
+- new options.desc : setting this to false will turn off path descriptions, reducing SVG length.
+- new options.viewbox : setting this to true will use viewBox instead of exact width and height
+- new options.colorsampling : color quantization will sample the colors now by default, can be turned off.
+- new options.blurradius : setting this to 1..5 will preprocess the image with a selective Gaussian blur with options.blurdelta treshold. This can filter noise and improve quality.
+- IndexedImage has width and height
+- getsvgstring() needs now only IndexedImage (tracedata) and options as parameters
+- colorquantization() needs now only imgd, palette and options as parameters
+- background field is removed from the results of color quantization 
 
 ### Running as a standalone program 
 
@@ -18,7 +32,7 @@ java -jar ImageTracer.jar <filename>
 
 With options:
 ```bash
-java -jar ImageTracer.jar <filename> outfilename output.svg ltres 1 qtres 1 pathomit 8 numberofcolors 16 mincolorratio 0.02 colorquantcycles 3 scale 1 lcpr 0 qcpr 0
+java -jar ImageTracer.jar <filename> outfilename output.svg ltres 1 qtres 1 pathomit 8 colorsampling 1 numberofcolors 16 mincolorratio 0.02 colorquantcycles 3 scale 1 simplifytolerance 0 roundcoords 1 lcpr 0 qcpr 0 desc 1 viewbox 0 blurradius 0 blurdelta 20
 ```
 
 ### Including in Java projects
@@ -44,14 +58,23 @@ options.put("qtres",1f);
 options.put("pathomit",8f);
 
 // Color quantization
+options.put("colorsampling",1f); // 1f means true ; 0f means false: starting with generated palette
 options.put("numberofcolors",16f);
 options.put("mincolorratio",0.02f);
 options.put("colorquantcycles",3f);
 
 // SVG rendering
 options.put("scale",1f);
+options.put("simplifytolerance",0f);
+options.put("roundcoords",1f); // 1f means rounded to 1 decimal places, like 7.3 ; 3f means rounded to 3 places, like 7.356 ; etc.
 options.put("lcpr",0f);
 options.put("qcpr",0f);
+options.put("desc",1f); // 1f means true ; 0f means false: SVG descriptions deactivated
+options.put("viewbox",0f); // 1f means true ; 0f means false: fixed width and height
+
+// Selective Gauss Blur
+options.put("blurradius",0f); // 0f means deactivated; 1f .. 5f : blur with this radius
+options.put("blurdelta",20f); // smaller than this RGB difference will be blurred
 
 // Palette
 // This is an example of a grayscale palette
@@ -95,62 +118,20 @@ There are more functions for advanced users, read the source if you are interest
 |ltres|1|Error treshold for straight lines.|
 |qtres|1|Error treshold for quadratic splines.|
 |pathomit|8|Edge node paths shorter than this will be discarded for noise reduction.|
-|numberofcolors|16|Number of colors to use on palette if palette is not defined.|
+|blurradius|0|Set this to 1..5 for selective Gaussian blur preprocessing.|
+|blurdelta|20|RGBA delta treshold for selective Gaussian blur preprocessing.|
+|numberofcolors|16|Number of colors to use on palette if pal object is not defined.|
 |mincolorratio|0.02|Color quantization will randomize a color if fewer pixels than (total pixels*mincolorratio) has it.|
 |colorquantcycles|3|Color quantization will be repeated this many times.|
 |scale|1|Every coordinate will be multiplied with this, to scale the SVG.|
+|colorsampling|1|Enable or disable color sampling. 1 is on, 0 is off.|
+|viewbox|0|Enable or disable SVG viewBox. 1 is on, 0 is off.|
+|desc|1|Enable or disable SVG descriptions. 1 is on, 0 is off.|
 |lcpr|0|Straight line control point radius, if this is greater than zero, small circles will be drawn in the SVG. Do not use this for big/complex images.|
 |qcpr|0|Quadratic spline control point radius, if this is greater than zero, small circles and lines will be drawn in the SVG. Do not use this for big/complex images.|
 
 ### Process overview
-####1. Color quantization
-The **colorquantization** function creates an indexed image (https://en.wikipedia.org/wiki/Indexed_color)
-
-![alt Original image (20x scale)](s2.png)
-####2. Layer separation and edge detection
-The **layering** function creates arrays for every color, and calculates edge node types. These are at the center of every 4 pixels, shown here as dots.
-
-![alt layer 0: black](s3.png)
-![alt layer 1: yellow](s4.png)
-![alt edge node examples](s7.png)
-####3. Pathscan
-The **pathscan** function finds chains of edge nodes, example: the cyan dots and lines.
-
-![alt an edge node path](s8.png)
-####4. Interpolation
-The **internodes** function interpolates the coordinates of the edge node paths. Every line segment in the new path has one of the 8 directions (East, North East, N, NW, W, SW, S, SE).
-
-![alt interpolating](s9.png)
-![alt interpolation result](s10.png)
-####5. Tracing
-The **tracepath** function splits the interpolated paths into sequences with two directions.
-
-![alt a sequence](s11.png)
-
-The **fitseq** function tries to fit a straight line on the start- and endpoint of the sequence (black line). If the distance error between the calculated points (black line) and actual sequence points (blue dots) is greater than the treshold, the point with the greatest error is selected (red line).
-
-![alt fitting a straight line](s12.png)
-
-The **fitseq** function tries to fit a quadratic spline through the error point.
-
-![alt fitting a quadratic spline](s13.png)
-![alt fitting line segments](s14.png) 
-![alt result with control points](s15.png)
-
-If the **fitseq** function can not fit a straight line or a quadratic spline to the sequence with the given error tresholds, then it will split the sequence in two and recursively call **fitseq** on each part.
-####6. SVG rendering
-The coordinates are rendered to [SVG Paths](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths) in the **getsvgstring** function.
-
-### Ideas for improvement
-- Error handling: there's very little error handling now, Out of memory can happen easily with big images or many layers.
-- Color quantization: other algorithms?
-- Color quantization: colors with few pixels are randomized, but probably the most distant colors should be found instead.
-- Tracing: 5.1. finding more suitable sequences.
-- Tracing: 5.5. Set splitpoint = (fitting point + errorpoint)/2 ; this is just a guess, there might be a better splitpoint.
-- Tracing: 5.7. If splitpoint-endpoint is a spline, try to add new points from the next sequence; this is not implemented.
-- Tracing: cubic splines or other curves?
-- Default values: they are chosen because they seemed OK, not based on calculations.
-- Output: [PDF](https://en.wikipedia.org/wiki/Portable_Document_Format), [DXF](https://en.wikipedia.org/wiki/AutoCAD_DXF),   [G-code](https://en.wikipedia.org/wiki/G-code) or other output?
+See [Process overview and Ideas for improvement](https://github.com/jankovicsandras/imagetracerjava/blob/master/process_overview.md)
 
 ### License
 #### The Unlicense / PUBLIC DOMAIN
