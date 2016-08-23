@@ -282,12 +282,12 @@ public class ImageTracer{
 				for(int k=0;k<palette.length;k++){
 					// averaging
 					if(paletteacc[k][3]>0){
-						palette[k][0] = (byte) (-128+Math.floor(paletteacc[k][0]/paletteacc[k][4]));
-						palette[k][1] = (byte) (-128+Math.floor(paletteacc[k][1]/paletteacc[k][4]));
-						palette[k][2] = (byte) (-128+Math.floor(paletteacc[k][2]/paletteacc[k][4]));
-						palette[k][3] = (byte) (-128+Math.floor(paletteacc[k][3]/paletteacc[k][4]));
+						palette[k][0] = (byte) (-128 + paletteacc[k][0] / paletteacc[k][4]);
+						palette[k][1] = (byte) (-128 + paletteacc[k][1] / paletteacc[k][4]);
+						palette[k][2] = (byte) (-128 + paletteacc[k][2] / paletteacc[k][4]);
+						palette[k][3] = (byte) (-128 + paletteacc[k][3] / paletteacc[k][4]);
 					}
-					ratio = paletteacc[k][4]/(imgd.width*imgd.height);
+					ratio = (float)( (double)(paletteacc[k][4]) / (double)(imgd.width*imgd.height) );
 
 					// Randomizing a color, if there are too few pixels and there will be a new cycle
 					if((ratio<minratio)&&(cnt<(cycles-1))){
