@@ -92,6 +92,10 @@ ImageTracer.saveString("output.svg",
 		      );
 ```
 
+### Deterministic output
+See [choices for deterministic tracing](https://github.com/jankovicsandras/imagetracerjava/blob/master/deterministic.md)
+
+
 ### Main Functions
 |Function name|Arguments|Returns|
 |-------------|---------|-------|
@@ -118,13 +122,14 @@ There are more functions for advanced users, read the source if you are interest
 |ltres|1|Error treshold for straight lines.|
 |qtres|1|Error treshold for quadratic splines.|
 |pathomit|8|Edge node paths shorter than this will be discarded for noise reduction.|
-|blurradius|0|Set this to 1..5 for selective Gaussian blur preprocessing.|
-|blurdelta|20|RGBA delta treshold for selective Gaussian blur preprocessing.|
+|colorsampling|1|Enable or disable color sampling. 1 is on, 0 is off.|
 |numberofcolors|16|Number of colors to use on palette if pal object is not defined.|
 |mincolorratio|0.02|Color quantization will randomize a color if fewer pixels than (total pixels*mincolorratio) has it.|
 |colorquantcycles|3|Color quantization will be repeated this many times.|
+|blurradius|0|Set this to 1..5 for selective Gaussian blur preprocessing.|
+|blurdelta|20|RGBA delta treshold for selective Gaussian blur preprocessing.|
 |scale|1|Every coordinate will be multiplied with this, to scale the SVG.|
-|colorsampling|1|Enable or disable color sampling. 1 is on, 0 is off.|
+|roundcoords|1|rounding coordinates to a given decimal place. 1f means rounded to 1 decimal place like 7.3 ; 3f means rounded to 3 places, like 7.356|
 |viewbox|0|Enable or disable SVG viewBox. 1 is on, 0 is off.|
 |desc|1|Enable or disable SVG descriptions. 1 is on, 0 is off.|
 |lcpr|0|Straight line control point radius, if this is greater than zero, small circles will be drawn in the SVG. Do not use this for big/complex images.|
