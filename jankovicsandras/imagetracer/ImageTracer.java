@@ -52,11 +52,11 @@ import javax.imageio.ImageIO;
 
 public class ImageTracer{
 
-	public static String versionnumber = "1.1.1";
+	public static String versionnumber = "1.1.2";
 
 	public ImageTracer(){}
 
-	public static void main(String[] args){
+	public static void main (String[] args){
 		try{
 
 			if(args.length<1){
@@ -95,13 +95,16 @@ public class ImageTracer{
 		}catch(Exception e){ e.printStackTrace(); }
 	}// End of main()
 
-	public static int arraycontains(String [] arr, String str){
+
+	public static int arraycontains (String [] arr, String str){
 		for(int j=0; j<arr.length; j++ ){ if(arr[j].toLowerCase().equals(str)){ return j; } } return -1;
 	}
 
-	public static float parsenext(String [] arr, int i){
+
+	public static float parsenext (String [] arr, int i){
 		if(i<(arr.length-1)){ try{ return Float.parseFloat(arr[i+1]); }catch(Exception e){} } return -1;
 	}
+
 
 	// Container for the color-indexed image before and tracedata after vectorizing
 	public static class IndexedImage{
@@ -116,6 +119,7 @@ public class ImageTracer{
 		}
 	}
 
+
 	// https://developer.mozilla.org/en-US/docs/Web/API/ImageData
 	public static class ImageData{
 		public int width, height;
@@ -125,8 +129,9 @@ public class ImageTracer{
 		}
 	}
 
+
 	// Saving a String as a file
-	public static void saveString(String filename, String str) throws Exception {
+	public static void saveString (String filename, String str) throws Exception {
 		File file = new File(filename);
 		// if file doesnt exists, then create it
 		if(!file.exists()){ file.createNewFile(); }
@@ -136,12 +141,13 @@ public class ImageTracer{
 		bw.close();
 	}
 
+
 	// Loading a file to ImageData, ARGB byte order
-	public static ImageData loadImageData(String filename) throws Exception {
+	public static ImageData loadImageData (String filename) throws Exception {
 		BufferedImage image = ImageIO.read(new File(filename));
 		return loadImageData(image);
 	}
-	public static ImageData loadImageData(BufferedImage image) throws Exception {
+	public static ImageData loadImageData (BufferedImage image) throws Exception {
 		int width = image.getWidth(); int height = image.getHeight();
 		int[] rawdata = image.getRGB(0, 0, width, height, null, 0, width);
 		byte[] data = new byte[rawdata.length*4];
@@ -154,12 +160,14 @@ public class ImageTracer{
 		return new ImageData(width,height,data);
 	}
 
+
 	// The bitshift method in loadImageData creates signed bytes where -1 -> 255 unsigned ; -128 -> 128 unsigned ;
 	// 127 -> 127 unsigned ; 0 -> 0 unsigned ; These will be converted to -128 (representing 0 unsigned) ...
 	// 127 (representing 255 unsigned) and tosvgcolorstr will add +128 to create RGB values 0..255
-	public static byte bytetrans(byte b){
+	public static byte bytetrans (byte b){
 		if(b<0){ return (byte)(b+128); }else{ return (byte)(b-128); }
 	}
+
 
 	////////////////////////////////////////////////////////////
 	//
@@ -173,11 +181,12 @@ public class ImageTracer{
 		ImageData imgd = loadImageData(filename);
 		return imagedataToSVG(imgd,options,palette);
 	}// End of imageToSVG()
-	public static String imageToSVG(BufferedImage image, HashMap<String,Float> options, byte [][] palette) throws Exception{
+	public static String imageToSVG (BufferedImage image, HashMap<String,Float> options, byte [][] palette) throws Exception{
 		options = checkoptions(options);
 		ImageData imgd = loadImageData(image);
 		return imagedataToSVG(imgd,options,palette);
 	}// End of imageToSVG()
+
 
 	// Tracing ImageData, then returning the SVG String
 	public static String imagedataToSVG (ImageData imgd, HashMap<String,Float> options, byte [][] palette){
@@ -186,17 +195,19 @@ public class ImageTracer{
 		return getsvgstring(ii, options);
 	}// End of imagedataToSVG()
 
+
 	// Loading an image from a file, tracing when loaded, then returning IndexedImage with tracedata in layers
-	public IndexedImage imageToTracedata(String filename, HashMap<String,Float> options, byte [][] palette) throws Exception{
+	public IndexedImage imageToTracedata (String filename, HashMap<String,Float> options, byte [][] palette) throws Exception{
 		options = checkoptions(options);
 		ImageData imgd = loadImageData(filename);
 		return imagedataToTracedata(imgd,options,palette);
 	}// End of imageToTracedata()
-	public IndexedImage imageToTracedata(BufferedImage image, HashMap<String,Float> options, byte [][] palette) throws Exception{
+	public IndexedImage imageToTracedata (BufferedImage image, HashMap<String,Float> options, byte [][] palette) throws Exception{
 		options = checkoptions(options);
 		ImageData imgd = loadImageData(image);
 		return imagedataToTracedata(imgd,options,palette);
 	}// End of imageToTracedata()
+
 
 	// Tracing ImageData, then returning IndexedImage with tracedata in layers
 	public static IndexedImage imagedataToTracedata (ImageData imgd, HashMap<String,Float> options, byte [][] palette){
@@ -213,8 +224,9 @@ public class ImageTracer{
 		return ii;
 	}// End of imagedataToTracedata()
 
+
 	// creating options object, setting defaults for missing values
-	public static HashMap<String,Float> checkoptions(HashMap<String,Float> options){
+	public static HashMap<String,Float> checkoptions (HashMap<String,Float> options){
 		if(options==null){ options = new HashMap<String,Float>(); }
 		// Tracing
 		if(!options.containsKey("ltres")){ options.put("ltres",1f); }
@@ -282,15 +294,15 @@ public class ImageTracer{
 				for(int k=0;k<palette.length;k++){
 					// averaging
 					if(paletteacc[k][3]>0){
-						palette[k][0] = (byte) (-128 + paletteacc[k][0] / paletteacc[k][4]);
-						palette[k][1] = (byte) (-128 + paletteacc[k][1] / paletteacc[k][4]);
-						palette[k][2] = (byte) (-128 + paletteacc[k][2] / paletteacc[k][4]);
-						palette[k][3] = (byte) (-128 + paletteacc[k][3] / paletteacc[k][4]);
+						palette[k][0] = (byte) (-128 + (paletteacc[k][0] / paletteacc[k][4]));
+						palette[k][1] = (byte) (-128 + (paletteacc[k][1] / paletteacc[k][4]));
+						palette[k][2] = (byte) (-128 + (paletteacc[k][2] / paletteacc[k][4]));
+						palette[k][3] = (byte) (-128 + (paletteacc[k][3] / paletteacc[k][4]));
 					}
 					ratio = (float)( (double)(paletteacc[k][4]) / (double)(imgd.width*imgd.height) );
 
 					// Randomizing a color, if there are too few pixels and there will be a new cycle
-					if((ratio<minratio)&&(cnt<(cycles-1))){
+					if( (ratio<minratio) && (cnt<(cycles-1)) ){
 						palette[k][0] = (byte) (-128+Math.floor(Math.random()*255));
 						palette[k][1] = (byte) (-128+Math.floor(Math.random()*255));
 						palette[k][2] = (byte) (-128+Math.floor(Math.random()*255));
@@ -347,8 +359,9 @@ public class ImageTracer{
 		return new IndexedImage(arr, palette);
 	}// End of colorquantization
 
+
 	// Generating a palette with numberofcolors, array[numberofcolors][4] where [i][0] = R ; [i][1] = G ; [i][2] = B ; [i][3] = A
-	public static byte[][] generatepalette(int numberofcolors){
+	public static byte[][] generatepalette (int numberofcolors){
 		byte [][] palette = new byte[numberofcolors][4];
 		if(numberofcolors<8){
 
@@ -392,7 +405,8 @@ public class ImageTracer{
 		return palette;
 	};// End of generatepalette()
 
-	public static byte[][] samplepalette(int numberofcolors, ImageData imgd){
+
+	public static byte[][] samplepalette (int numberofcolors, ImageData imgd){
 		int idx=0; byte [][] palette = new byte[numberofcolors][4];
 		for(int i=0; i<numberofcolors; i++){
 			idx = (int) (Math.floor( (Math.random() * imgd.data.length) / 4 ) * 4);
@@ -403,6 +417,7 @@ public class ImageTracer{
 		}
 		return palette;
 	}// End of samplepalette()
+
 
 	// 2. Layer separation and edge detection
 	// Edge node types ( ▓:light or 1; ░:dark or 0 )
@@ -423,14 +438,14 @@ public class ImageTracer{
 				val = ii.array[j][i];
 
 				// Are neighbor pixel colors the same?
-				if((j>0)    && (i>0))   { n1 = ii.array[j-1][i-1]==val?1:0; }else{ n1 = 0; }
-				if (j>0)                { n2 = ii.array[j-1][i  ]==val?1:0; }else{ n2 = 0; }
-				if((j>0)    && (i<(aw-1))){ n3 = ii.array[j-1][i+1]==val?1:0; }else{ n3 = 0; }
-				if (i>0)                { n4 = ii.array[j  ][i-1]==val?1:0; }else{ n4 = 0; }
-				if (i<(aw-1))             { n5 = ii.array[j  ][i+1]==val?1:0; }else{ n5 = 0; }
-				if((j<(ah-1)) && (i>0))   { n6 = ii.array[j+1][i-1]==val?1:0; }else{ n6 = 0; }
-				if (j<(ah-1))             { n7 = ii.array[j+1][i  ]==val?1:0; }else{ n7 = 0; }
-				if((j<(ah-1)) && (i<(aw-1))){ n8 = ii.array[j+1][i+1]==val?1:0; }else{ n8 = 0; }
+				n1 = ii.array[j-1][i-1]==val ? 1 : 0;
+				n2 = ii.array[j-1][i  ]==val ? 1 : 0;
+				n3 = ii.array[j-1][i+1]==val ? 1 : 0;
+				n4 = ii.array[j  ][i-1]==val ? 1 : 0;
+				n5 = ii.array[j  ][i+1]==val ? 1 : 0;
+				n6 = ii.array[j+1][i-1]==val ? 1 : 0;
+				n7 = ii.array[j+1][i  ]==val ? 1 : 0;
+				n8 = ii.array[j+1][i+1]==val ? 1 : 0;
 
 				// this pixel"s type and looking back on previous pixels
 				layers[val][j+1][i+1] = 1 + (n5 * 2) + (n8 * 4) + (n7 * 8) ;
@@ -444,6 +459,34 @@ public class ImageTracer{
 		return layers;
 	}// End of layering()
 
+
+	// Lookup tables for pathscan
+	static byte [] pathscan_dir_lookup = {0,0,3,0, 1,0,3,0, 0,3,3,1, 0,3,0,0};
+	static boolean [] pathscan_holepath_lookup = {false,false,false,false, false,false,false,true, false,false,false,true, false,true,true,false };
+	// pathscan_combined_lookup[ arr[py][px] ][ dir ] = [nextarrpypx, nextdir, deltapx, deltapy];
+	static byte [][][] pathscan_combined_lookup = {
+			{{-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}},// arr[py][px]==0 is invalid
+			{{ 0, 1, 0,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}, { 0, 2,-1, 0}},
+			{{-1,-1,-1,-1}, {-1,-1,-1,-1}, { 0, 1, 0,-1}, { 0, 0, 1, 0}},
+			{{ 0, 0, 1, 0}, {-1,-1,-1,-1}, { 0, 2,-1, 0}, {-1,-1,-1,-1}},
+
+			{{-1,-1,-1,-1}, { 0, 0, 1, 0}, { 0, 3, 0, 1}, {-1,-1,-1,-1}},
+			{{13, 3, 0, 1}, {13, 2,-1, 0}, { 7, 1, 0,-1}, { 7, 0, 1, 0}},
+			{{-1,-1,-1,-1}, { 0, 1, 0,-1}, {-1,-1,-1,-1}, { 0, 3, 0, 1}},
+			{{ 0, 3, 0, 1}, { 0, 2,-1, 0}, {-1,-1,-1,-1}, {-1,-1,-1,-1}},
+
+			{{ 0, 3, 0, 1}, { 0, 2,-1, 0}, {-1,-1,-1,-1}, {-1,-1,-1,-1}},
+			{{-1,-1,-1,-1}, { 0, 1, 0,-1}, {-1,-1,-1,-1}, { 0, 3, 0, 1}},
+			{{11, 1, 0,-1}, {14, 0, 1, 0}, {14, 3, 0, 1}, {11, 2,-1, 0}},
+			{{-1,-1,-1,-1}, { 0, 0, 1, 0}, { 0, 3, 0, 1}, {-1,-1,-1,-1}},
+
+			{{ 0, 0, 1, 0}, {-1,-1,-1,-1}, { 0, 2,-1, 0}, {-1,-1,-1,-1}},
+			{{-1,-1,-1,-1}, {-1,-1,-1,-1}, { 0, 1, 0,-1}, { 0, 0, 1, 0}},
+			{{ 0, 1, 0,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}, { 0, 2,-1, 0}},
+			{{-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}, {-1,-1,-1,-1}}// arr[py][px]==15 is invalid
+	};
+
+
 	// 3. Walking through an edge node array, discarding edge node types 0 and 15 and creating paths from the rest.
 	// Walk directions (dir): 0 > ; 1 ^ ; 2 < ; 3 v
 	// Edge node types ( ▓:light or 1; ░:dark or 0 )
@@ -456,30 +499,21 @@ public class ImageTracer{
 		ArrayList<Integer[]> thispath;
 		int px=0,py=0,w=arr[0].length,h=arr.length,dir=0;
 		boolean pathfinished=true, holepath = false;
+		byte[] lookuprow;
 
 		for(int j=0;j<h;j++){
 			for(int i=0;i<w;i++){
 				if((arr[j][i]!=0)&&(arr[j][i]!=15)){
+
 					// Init
 					px = i; py = j;
 					paths.add(new ArrayList<Integer[]>());
 					thispath = paths.get(paths.size()-1);
 					pathfinished = false;
+
 					// fill paths will be drawn, but hole paths are also required to remove unnecessary edge nodes
-					if(arr[py][px]==1){dir = 0;}
-					if(arr[py][px]==2){dir = 3;}
-					if(arr[py][px]==3){dir = 0;}
-					if(arr[py][px]==4){dir = 1; holepath = false;}
-					if(arr[py][px]==5){dir = 0;}
-					if(arr[py][px]==6){dir = 3;}
-					if(arr[py][px]==7){dir = 0; holepath = true;}
-					if(arr[py][px]==8){dir = 0;}
-					if(arr[py][px]==9){dir = 3;}
-					if(arr[py][px]==10){dir = 3;}
-					if(arr[py][px]==11){dir = 1; holepath = true;}
-					if(arr[py][px]==12){dir = 0;}
-					if(arr[py][px]==13){dir = 3; holepath = true;}
-					if(arr[py][px]==14){dir = 0; holepath = true;}
+					dir = pathscan_dir_lookup[ arr[py][px] ]; holepath = pathscan_holepath_lookup[ arr[py][px] ];
+
 					// Path points loop
 					while(!pathfinished){
 
@@ -489,138 +523,9 @@ public class ImageTracer{
 						thispath.get(thispath.size()-1)[1] = py-1;
 						thispath.get(thispath.size()-1)[2] = arr[py][px];
 
-						// Node types
-						if(arr[py][px]==1){
-							arr[py][px] = 0;
-							if(dir==0){
-								py--;dir=1;
-							}else if(dir==3){
-								px--;dir=2;
-							}else{pathfinished=true;paths.remove(thispath);}
-						}
-
-						else if(arr[py][px]==2){
-							arr[py][px] = 0;
-							if(dir==3){
-								px++;dir=0;
-							}else if(dir==2){
-								py--;dir=1;
-							}else{pathfinished=true;paths.remove(thispath);}
-						}
-
-						else if(arr[py][px]==3){
-							arr[py][px] = 0;
-							if(dir==0){
-								px++;
-							}else if(dir==2){
-								px--;
-							}else{pathfinished=true;paths.remove(thispath);}
-						}
-
-						else if(arr[py][px]==4){
-							arr[py][px] = 0;
-							if(dir==1){
-								px++;dir=0;
-							}else if(dir==2){
-								py++;dir=3;
-							}else{pathfinished=true;paths.remove(thispath);}
-						}
-
-						else if(arr[py][px]==5){
-							if(dir==0){
-								arr[py][px] = 13;py++;dir=3;
-							}else if(dir==1){
-								arr[py][px] = 13;px--;dir=2;
-							}else if(dir==2){
-								arr[py][px] = 7;py--;dir=1;
-							}else if(dir==3){
-								arr[py][px] = 7;px++;dir=0;
-							}
-						}
-
-						else if(arr[py][px]==6){
-							arr[py][px] = 0;
-							if(dir==1){
-								py--;
-							}else if(dir==3){
-								py++;
-							}else{pathfinished=true;paths.remove(thispath);}
-						}
-
-						else if(arr[py][px]==7){
-							arr[py][px] = 0;
-							if(dir==0){
-								py++;dir=3;
-							}else if(dir==1){
-								px--;dir=2;
-							}else{pathfinished=true;paths.remove(thispath);}
-						}
-
-						else if(arr[py][px]==8){
-							arr[py][px] = 0;
-							if(dir==0){
-								py++;dir=3;
-							}else if(dir==1){
-								px--;dir=2;
-							}else{pathfinished=true;paths.remove(thispath);}
-						}
-
-						else if(arr[py][px]==9){
-							arr[py][px] = 0;
-							if(dir==1){
-								py--;
-							}else if(dir==3){
-								py++;
-							}else{pathfinished=true;paths.remove(thispath);}
-						}
-
-						else if(arr[py][px]==10){
-							if(dir==0){
-								arr[py][px] = 11;py--;dir=1;
-							}else if(dir==1){
-								arr[py][px] = 14;px++;dir=0;
-							}else if(dir==2){
-								arr[py][px] = 14;py++;dir=3;
-							}else if(dir==3){
-								arr[py][px] = 11;px--;dir=2;
-							}
-						}
-
-						else if(arr[py][px]==11){
-							arr[py][px] = 0;
-							if(dir==1){
-								px++;dir=0;
-							}else if(dir==2){
-								py++;dir=3;
-							}else{pathfinished=true;paths.remove(thispath);}
-						}
-
-						else if(arr[py][px]==12){
-							arr[py][px] = 0;
-							if(dir==0){
-								px++;
-							}else if(dir==2){
-								px--;
-							}else{pathfinished=true;paths.remove(thispath);}
-						}
-
-						else if(arr[py][px]==13){
-							arr[py][px] = 0;
-							if(dir==2){
-								py--;dir=1;
-							}else if(dir==3){
-								px++;dir=0;
-							}else{pathfinished=true;paths.remove(thispath);}
-						}
-
-						else if(arr[py][px]==14){
-							arr[py][px] = 0;
-							if(dir==0){
-								py--;dir=1;
-							}else if(dir==3){
-								px--;dir=2;
-							}else{pathfinished=true;paths.remove(thispath);}
-						}
+						// Next: look up the replacement, direction and coordinate changes = clear this cell, turn if required, walk forward
+						lookuprow = pathscan_combined_lookup[ arr[py][px] ][ dir ];
+						arr[py][px] = lookuprow[0]; dir = lookuprow[1]; px += lookuprow[2]; py += lookuprow[3];
 
 						// Close path
 						if(((px-1)==thispath.get(0)[0])&&((py-1)==thispath.get(0)[1])){
@@ -651,14 +556,15 @@ public class ImageTracer{
 		return bpaths;
 	}
 
+
 	// 4. interpolating between path points for nodes with 8 directions ( East, SouthEast, S, SW, W, NW, N, NE )
 	public static ArrayList<ArrayList<Double[]>> internodes (ArrayList<ArrayList<Integer[]>> paths){
 		ArrayList<ArrayList<Double[]>> ins = new ArrayList<ArrayList<Double[]>>();
 		ArrayList<Double[]> thisinp;
 		Double[] thispoint, nextpoint = new Double[2];
 		Integer[] pp1, pp2, pp3;
-
 		int palen=0,nextidx=0,nextidx2=0;
+
 		// paths loop
 		for(int pacnt=0; pacnt<paths.size(); pacnt++){
 			ins.add(new ArrayList<Double[]>());
@@ -679,7 +585,6 @@ public class ImageTracer{
 				nextpoint[0] = (pp2[0]+pp3[0]) / 2.0;
 				nextpoint[1] = (pp2[1]+pp3[1]) / 2.0;
 
-
 				// line segment direction to the next point
 				if(thispoint[0] < nextpoint[0]){
 					if     (thispoint[1] < nextpoint[1]){ thispoint[2] = 1.0; }// SouthEast
@@ -688,7 +593,7 @@ public class ImageTracer{
 				}else if(thispoint[0] > nextpoint[0]){
 					if     (thispoint[1] < nextpoint[1]){ thispoint[2] = 3.0; }// SW
 					else if(thispoint[1] > nextpoint[1]){ thispoint[2] = 5.0; }// NW
-					else                                { thispoint[2] = 4.0; }// N
+					else                                { thispoint[2] = 4.0; }// W
 				}else{
 					if     (thispoint[1] < nextpoint[1]){ thispoint[2] = 2.0; }// S
 					else if(thispoint[1] > nextpoint[1]){ thispoint[2] = 6.0; }// N
@@ -696,11 +601,10 @@ public class ImageTracer{
 				}
 
 			}// End of pathpoints loop
-
 		}// End of paths loop
-
 		return ins;
 	}// End of internodes()
+
 
 	// 4. Batch interpollation
 	static ArrayList<ArrayList<ArrayList<Double[]>>> batchinternodes (ArrayList<ArrayList<ArrayList<Integer[]>>> bpaths){
@@ -710,6 +614,7 @@ public class ImageTracer{
 		}
 		return binternodes;
 	}
+
 
 	// 5. tracepath() : recursively trying to fit straight and quadratic spline segments on the 8 direction internode path
 
@@ -758,6 +663,7 @@ public class ImageTracer{
 		return smp;
 
 	}// End of tracepath()
+
 
 	// 5.2. - 5.6. recursively fitting a straight or quadratic line segment on this sequence of path nodes,
 	// called from tracepath()
@@ -851,17 +757,19 @@ public class ImageTracer{
 
 	}// End of fitseq()
 
+
 	// 5. Batch tracing paths
-	public static ArrayList<ArrayList<Double[]>> batchtracepaths(ArrayList<ArrayList<Double[]>> internodepaths, float ltres,float qtres){
+	public static ArrayList<ArrayList<Double[]>> batchtracepaths (ArrayList<ArrayList<Double[]>> internodepaths, float ltres,float qtres){
 		ArrayList<ArrayList<Double[]>> btracedpaths = new ArrayList<ArrayList<Double[]>>();
-		for(int k=0;k<internodepaths.size();k++){
+		for(int k=0; k<internodepaths.size(); k++){
 			btracedpaths.add(tracepath(internodepaths.get(k),ltres,qtres) );
 		}
 		return btracedpaths;
 	}
 
+
 	// 5. Batch tracing layers
-	public static ArrayList<ArrayList<ArrayList<Double[]>>> batchtracelayers(ArrayList<ArrayList<ArrayList<Double[]>>> binternodes, float ltres, float qtres){
+	public static ArrayList<ArrayList<ArrayList<Double[]>>> batchtracelayers (ArrayList<ArrayList<ArrayList<Double[]>>> binternodes, float ltres, float qtres){
 		ArrayList<ArrayList<ArrayList<Double[]>>> btbis = new ArrayList<ArrayList<ArrayList<Double[]>>>();
 		for(int k=0; k<binternodes.size(); k++){
 			btbis.add( batchtracepaths( binternodes.get(k),ltres,qtres) );
@@ -869,18 +777,20 @@ public class ImageTracer{
 		return btbis;
 	}
 
+
 	////////////////////////////////////////////////////////////
 	//
 	//  SVG Drawing functions
 	//
 	////////////////////////////////////////////////////////////
 
-	public static float roundtodec(float val, float places){
+	public static float roundtodec (float val, float places){
 		return (float)(Math.round(val*Math.pow(10,places))/Math.pow(10,places));
 	}
 
+
 	// Getting SVG path element string from a traced path
-	public static void svgpathstring(StringBuilder sb, String desc, ArrayList<Double[]> segments, String colorstr, HashMap<String,Float> options){
+	public static void svgpathstring (StringBuilder sb, String desc, ArrayList<Double[]> segments, String colorstr, HashMap<String,Float> options){
 		float scale = options.get("scale"), lcpr = options.get("lcpr"), qcpr = options.get("qcpr"), roundcoords = (float) Math.floor(options.get("roundcoords"));
 		// Path
 		sb.append("<path ").append(desc).append(colorstr).append("d=\"" ).append("M ").append(segments.get(0)[1]*scale).append(" ").append(segments.get(0)[2]*scale).append(" ");
@@ -927,7 +837,7 @@ public class ImageTracer{
 
 	// Converting tracedata to an SVG string, paths are drawn according to a Z-index
 	// the optional lcpr and qcpr are linear and quadratic control point radiuses
-	public static String getsvgstring(IndexedImage ii, HashMap<String,Float> options){
+	public static String getsvgstring (IndexedImage ii, HashMap<String,Float> options){
 		options = checkoptions(options);
 		// SVG start
 		int w = (int) (ii.width * options.get("scale")), h = (int) (ii.height * options.get("scale"));
@@ -977,16 +887,19 @@ public class ImageTracer{
 
 	}// End of getsvgstring()
 
-	static String tosvgcolorstr(byte[] c){
+
+	static String tosvgcolorstr (byte[] c){
 		return "fill=\"rgb("+(c[0]+128)+","+(c[1]+128)+","+(c[2]+128)+")\" stroke=\"rgb("+(c[0]+128)+","+(c[1]+128)+","+(c[2]+128)+")\" stroke-width=\"1\" opacity=\""+((c[3]+128)/255.0)+"\" ";
 	}
+
 
 	// Gaussian kernels for blur
 	static double[][] gks = { {0.27901,0.44198,0.27901}, {0.135336,0.228569,0.272192,0.228569,0.135336}, {0.086776,0.136394,0.178908,0.195843,0.178908,0.136394,0.086776},
 			{0.063327,0.093095,0.122589,0.144599,0.152781,0.144599,0.122589,0.093095,0.063327}, {0.049692,0.069304,0.089767,0.107988,0.120651,0.125194,0.120651,0.107988,0.089767,0.069304,0.049692} };
 
+
 	// Selective Gaussian blur for preprocessing
-	static ImageData blur(ImageData imgd, float rad, float del){
+	static ImageData blur (ImageData imgd, float rad, float del){
 		int i,j,k,d,idx;
 		double racc,gacc,bacc,aacc,wacc;
 		ImageData imgd2 = new ImageData(imgd.width,imgd.height,new byte[imgd.width*imgd.height*4]);
@@ -1074,5 +987,6 @@ public class ImageTracer{
 		return imgd2;
 
 	}// End of blur()
+
 
 }// End of ImageTracer class
