@@ -32,12 +32,12 @@ Warning: if the outfilename parameter is not specified, then this will overwrite
 
 Basic usage: 
 ```bash
-java -jar ImageTracer.jar <filename>
+java -jar ImageTracer.jar smiley.png
 ```
 
 With options:
 ```bash
-java -jar ImageTracer.jar <filename> outfilename output.svg ltres 1 qtres 1 pathomit 8 colorsampling 1 numberofcolors 16 mincolorratio 0.02 colorquantcycles 3 scale 1 simplifytolerance 0 roundcoords 1 lcpr 0 qcpr 0 desc 1 viewbox 0 blurradius 0 blurdelta 20
+java -jar ImageTracer.jar smiley.png outfilename output.svg ltres 1 qtres 1 pathomit 8 colorsampling 1 numberofcolors 16 mincolorratio 0.02 colorquantcycles 3 scale 1 simplifytolerance 0 roundcoords 1 lcpr 0 qcpr 0 desc 1 viewbox 0 blurradius 0 blurdelta 20
 ```
 
 ### Including in Java projects
@@ -111,7 +111,7 @@ See [choices for deterministic tracing](https://github.com/jankovicsandras/image
 |```imagedataToSVG```|```ImageData imgd, HashMap<String,Float> options /*can be null*/, byte [][] palette /*can be null*/```|```String /*SVG content*/```|
 |```imageToTracedata```|```String filename, HashMap<String,Float> options /*can be null*/, byte [][] palette /*can be null*/```|```IndexedImage /*read the source for details*/```|
 |```imageToTracedata```|```BufferedImage image, HashMap<String,Float> options /*can be null*/, byte [][] palette /*can be null*/```|```IndexedImage /*read the source for details*/```|
-|```imagedataToTracedata```|```ImageData imgd, HashMap<String,Float> options /*can be null*/, byte [][] palette /*can be null*/|IndexedImage /*read the source for details*/```|
+|```imagedataToTracedata```|```ImageData imgd, HashMap<String,Float> options /*can be null*/, byte [][] palette /*can be null*/```|```IndexedImage /*read the source for details*/```|
 
 	
 #### Helper Functions
