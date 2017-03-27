@@ -366,12 +366,12 @@ public class ImageTracer{
 		if(numberofcolors<8){
 
 			// Grayscale
-			byte graystep = (byte) Math.floor(255/(numberofcolors-1));
+			double graystep = 255.0/(double)(numberofcolors-1);
 			for(byte ccnt=0;ccnt<numberofcolors;ccnt++){
-				palette[ccnt][0] = (byte)(-128+(ccnt*graystep));
-				palette[ccnt][1] = (byte)(-128+(ccnt*graystep));
-				palette[ccnt][2] = (byte)(-128+(ccnt*graystep));
-				palette[ccnt][3] = (byte)255;
+				palette[ccnt][0] = (byte)(-128+Math.round(ccnt*graystep));
+				palette[ccnt][1] = (byte)(-128+Math.round(ccnt*graystep));
+				palette[ccnt][2] = (byte)(-128+Math.round(ccnt*graystep));
+				palette[ccnt][3] = (byte)127;
 			}
 
 		}else{
