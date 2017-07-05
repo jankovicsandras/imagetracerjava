@@ -14,7 +14,7 @@ import javax.imageio.ImageIO;
 
 public class ImageTracer{
 
-	public static String versionnumber = "1.1.2";
+	public static String versionnumber = "1.1.3";
 	private static int[] rawdata;
 
 	public ImageTracer(){}

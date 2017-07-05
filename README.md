@@ -7,6 +7,12 @@ by András Jankovics
 
 This is a port of imagetracer.js: https://github.com/jankovicsandras/imagetracerjs
 
+### 1.1.3
+
+- Imported Quantize.java by Adam Doppelt to replace the old quantization algorithm, which, because it was based on K-means, it averaged the colors, resulting in a non-intuitive final result, where the palette was less saturated than the original.
+- Refactored the code so that it is distributed along smaller files.
+
+
 ### 1.1.2
 
 - minor bugfixes
@@ -24,13 +30,13 @@ This is a port of imagetracer.js: https://github.com/jankovicsandras/imagetracer
 - ```IndexedImage``` has width and height
 - ```getsvgstring()``` needs now only ```IndexedImage``` (tracedata) and ```options``` as parameters
 - ```colorquantization()``` needs now only ```imgd```, ```palette``` and ```options``` as parameters
-- background field is removed from the results of color quantization 
+- background field is removed from the results of color quantization
 
-### Running as a standalone program 
+### Running as a standalone program
 
 Warning: if the outfilename parameter is not specified, then this will overwrite <filename>.svg .
 
-Basic usage: 
+Basic usage:
 ```bash
 java -jar ImageTracer.jar smiley.png
 ```
@@ -112,7 +118,7 @@ See [options for deterministic tracing](https://github.com/jankovicsandras/image
 |```imageToTracedata```|```BufferedImage image, HashMap<String,Float> options /*can be null*/, byte [][] palette /*can be null*/```|```IndexedImage /*read the source for details*/```|
 |```imagedataToTracedata```|```ImageData imgd, HashMap<String,Float> options /*can be null*/, byte [][] palette /*can be null*/```|```IndexedImage /*read the source for details*/```|
 
-	
+
 #### Helper Functions
 |Function name|Arguments|Returns|
 |-------------|---------|-------|
@@ -123,7 +129,7 @@ See [options for deterministic tracing](https://github.com/jankovicsandras/image
 ```ImageData``` is similar to [ImageData](https://developer.mozilla.org/en-US/docs/Web/API/ImageData) here.
 
 There are more functions for advanced users, read the source if you are interested. :)
-	
+
 ### Options
 |Option name|Default value|Meaning|
 |-----------|-------------|-------|
