@@ -7,6 +7,8 @@ by András Jankovics
 
 This is a port of imagetracer.js: https://github.com/jankovicsandras/imagetracerjs
 
+### Check this out for a refactored version with better color quantization algorithm: https://github.com/miguelemosreverte/imagetracerjava
+
 ### 1.1.2
 
 - minor bugfixes
