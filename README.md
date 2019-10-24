@@ -52,7 +52,7 @@ java -jar ImageTracer.jar smiley.png outfilename output.svg ltres 1 qtres 1 path
 ```
 
 ### Including in Java projects
-Add ImageTracer.jar to your build path, import, then use the static methods:
+Add ImageTracer-1.14.jar to your build path, import, then use the static methods:
 ```java
 import jankovicsandras.imagetracer.ImageTracer;
 
