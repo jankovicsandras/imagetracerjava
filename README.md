@@ -6,6 +6,10 @@ Simple raster image tracer and vectorizer written in Java for desktop. See https
 by András Jankovics
 
 This is a port of imagetracer.js: https://github.com/jankovicsandras/imagetracerjs
+### 1.1.4
+
+- No changes in algorithm
+- Ported the project setup to maven
 
 ### 1.1.3
 
@@ -38,7 +42,8 @@ Warning: if the outfilename parameter is not specified, then this will overwrite
 
 Basic usage:
 ```bash
-java -jar ImageTracer.jar smiley.png
+mvn package
+java -jar target/ImageTracer-1.1.4.jar smiley.png
 ```
 
 With options:
@@ -47,7 +52,7 @@ java -jar ImageTracer.jar smiley.png outfilename output.svg ltres 1 qtres 1 path
 ```
 
 ### Including in Java projects
-Add ImageTracer.jar to your build path, import, then use the static methods:
+Add ImageTracer-1.1.4.jar to your build path, import, then use the static methods:
 ```java
 import jankovicsandras.imagetracer.ImageTracer;
 
