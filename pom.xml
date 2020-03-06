@@ -19,6 +19,11 @@
 
 	<dependencies>
 
+		<dependency>
+			<groupId>de.erichseifert.vectorgraphics2d</groupId>
+			<artifactId>VectorGraphics2D</artifactId>
+			<version>0.13</version>
+		</dependency>
 
 		<!-- Testing -->
 		<dependency>

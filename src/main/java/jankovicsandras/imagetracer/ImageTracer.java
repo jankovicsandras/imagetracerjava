@@ -42,9 +42,9 @@ public class ImageTracer{
 			} else {
 
 				// Parameter parsing
-				String outfilename = args[0] + ".svg";
+				String outfilename = args[0];
 				HashMap<String,Float> options = new HashMap<String,Float>();
-				String[] parameternames = {"ltres","qtres","pathomit","numberofcolors","colorquantcycles","scale","roundcoords","lcpr","qcpr","desc","viewbox","outfilename", "blurammount"};
+				String[] parameternames = {"ltres","qtres","pathomit","numberofcolors","colorquantcycles","format","scale","roundcoords","lcpr","qcpr","desc","viewbox","outfilename", "blurammount"};
 				int j = -1; float f = -1;
 				for (String parametername : parameternames) {
 					j = arraycontains(args,parametername);
@@ -57,8 +57,16 @@ public class ImageTracer{
 					}
 				}// End of parameternames loop
 
-				// Loading image, tracing, rendering SVG, saving SVG file
-				saveString(outfilename,imageToSVG(args[0],options));
+				options = checkoptions(options);
+
+				// Loading image, tracing, rendering, saving output file
+				if (options.get("format") == 0) {
+					saveString(outfilename + ".svg", imageToSVG(args[0], options));
+				} else if (options.get("format") == 1) {
+					saveString(outfilename + ".pdf", imageToPDF(args[0], options));
+				} else  {
+					System.out.println("ERROR: Incorrect output format. Options: 0 - SVG, 1 - PDF");
+				}
 
 			}// End of parameter parsing and processing
 
@@ -170,9 +178,6 @@ public class ImageTracer{
 
 	// Loading an image from a file, tracing when loaded, then returning the SVG String
 	public static String imageToSVG (String filename, HashMap<String,Float> options) throws Exception{
-
-		options = checkoptions(options);
-
 		System.out.println(options.toString());
 		ImageData imgd = loadImageData(filename, options);
 		return imagedataToSVG(imgd,options, getPalette(ImageIO.read(new File(filename)), options));
@@ -180,20 +185,23 @@ public class ImageTracer{
 
 	// Tracing ImageData, then returning the SVG String
 	public static String imagedataToSVG (ImageData imgd, HashMap<String,Float> options, byte [][] palette){
-		options = checkoptions(options);
 		IndexedImage ii = imagedataToTracedata(imgd,options,palette);
 		return SVGUtils.getsvgstring(ii, options);
 	}// End of imagedataToSVG()
 
+	// Loading an image from a file, tracing when loaded, then returning PDF String
+	public static String imageToPDF (String filename, HashMap<String,Float> options) throws Exception {
+		ImageData imgd = loadImageData(filename, options);
+		IndexedImage ii = imagedataToTracedata(imgd,options,getPalette(ImageIO.read(new File(filename)), options));
+		return PDFUtils.getPDFString(ii, options);
+	}// End of imagedataToSVG()
 
 	// Loading an image from a file, tracing when loaded, then returning IndexedImage with tracedata in layers
 	public IndexedImage imageToTracedata (String filename, HashMap<String,Float> options, byte [][] palette) throws Exception{
-		options = checkoptions(options);
 		ImageData imgd = loadImageData(filename, options);
 		return imagedataToTracedata(imgd,options,palette);
 	}// End of imageToTracedata()
 	public IndexedImage imageToTracedata (BufferedImage image, HashMap<String,Float> options, byte [][] palette) throws Exception{
-		options = checkoptions(options);
 		ImageData imgd = loadImageData(image);
 		return imagedataToTracedata(imgd,options,palette);
 	}// End of imageToTracedata()
@@ -225,7 +233,8 @@ public class ImageTracer{
 		// Color quantization
 		if(!options.containsKey("numberofcolors")){ options.put("numberofcolors",128f); }
 		if(!options.containsKey("colorquantcycles")){ options.put("colorquantcycles",15f); }
-		// SVG rendering
+		// Output rendering
+		if(!options.containsKey("format")){ options.put("format",0f); }
 		if(!options.containsKey("scale")){ options.put("scale",1f); }
 		if(!options.containsKey("roundcoords")){ options.put("roundcoords",1f); }
 		if(!options.containsKey("lcpr")){ options.put("lcpr",0f); }
