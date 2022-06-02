@@ -9,6 +9,8 @@ This is a port of imagetracer.js: https://github.com/jankovicsandras/imagetracer
 
 ### Check this out for a refactored version with better color quantization algorithm: https://github.com/miguelemosreverte/imagetracerjava
 
+### Check this out for a C++ port: https://github.com/dov/ImageTracerCpp
+
 ### 1.1.2
 
 - minor bugfixes
