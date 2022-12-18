@@ -6,6 +6,16 @@ Simple raster image tracer and vectorizer written in Java for desktop. See https
 by András Jankovics
 
 This is a port of imagetracer.js: https://github.com/jankovicsandras/imagetracerjs
+### 1.1.4
+
+- No changes in algorithm
+- Ported the project setup to maven
+
+### 1.1.3
+
+- Imported Quantize.java by Adam Doppelt to replace the old quantization algorithm, which, because it was based on K-means, it averaged the colors, resulting in a non-intuitive final result, where the palette was less saturated than the original.
+- Refactored the code so that it is distributed along smaller files.
+
 
 ### Check this out for a refactored version with better color quantization algorithm: https://github.com/miguelemosreverte/imagetracerjava
 
@@ -28,15 +38,16 @@ This is a port of imagetracer.js: https://github.com/jankovicsandras/imagetracer
 - ```IndexedImage``` has width and height
 - ```getsvgstring()``` needs now only ```IndexedImage``` (tracedata) and ```options``` as parameters
 - ```colorquantization()``` needs now only ```imgd```, ```palette``` and ```options``` as parameters
-- background field is removed from the results of color quantization 
+- background field is removed from the results of color quantization
 
-### Running as a standalone program 
+### Running as a standalone program
 
 Warning: if the outfilename parameter is not specified, then this will overwrite <filename>.svg .
 
-Basic usage: 
+Basic usage:
 ```bash
-java -jar ImageTracer.jar smiley.png
+mvn package
+java -jar target/ImageTracer-1.1.4.jar smiley.png
 ```
 
 With options:
@@ -45,7 +56,7 @@ java -jar ImageTracer.jar smiley.png outfilename output.svg ltres 1 qtres 1 path
 ```
 
 ### Including in Java projects
-Add ImageTracer.jar to your build path, import, then use the static methods:
+Add ImageTracer-1.1.4.jar to your build path, import, then use the static methods:
 ```java
 import jankovicsandras.imagetracer.ImageTracer;
 
@@ -116,7 +127,7 @@ See [options for deterministic tracing](https://github.com/jankovicsandras/image
 |```imageToTracedata```|```BufferedImage image, HashMap<String,Float> options /*can be null*/, byte [][] palette /*can be null*/```|```IndexedImage /*read the source for details*/```|
 |```imagedataToTracedata```|```ImageData imgd, HashMap<String,Float> options /*can be null*/, byte [][] palette /*can be null*/```|```IndexedImage /*read the source for details*/```|
 
-	
+
 #### Helper Functions
 |Function name|Arguments|Returns|
 |-------------|---------|-------|
@@ -127,7 +138,7 @@ See [options for deterministic tracing](https://github.com/jankovicsandras/image
 ```ImageData``` is similar to [ImageData](https://developer.mozilla.org/en-US/docs/Web/API/ImageData) here.
 
 There are more functions for advanced users, read the source if you are interested. :)
-	
+
 ### Options
 |Option name|Default value|Meaning|
 |-----------|-------------|-------|
